@@ -1,0 +1,93 @@
+﻿@model Search_Selector.ViewModels.SearchViewModel
+
+@{
+    ViewBag.Title = "Search Selector";
+}
+
+
+
+<div class="wrapper wrapper-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card border-0">
+                    <div class="card-body">
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="row pb-4">
+                                <div class="col"></div>
+                                <div class="col-auto">
+                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <label class="btn active" onclick="setSearchProvider('google')">
+                                            <input type="radio" name="providers" id="google" /><img class="radbutton-img" src="~/Content/img/google-2.png" />
+                                        </label>
+                                        <label class="btn" onclick="setSearchProvider('yahoo')">
+                                            <input type="radio" name="providers" id="yahoo" /><img class="radbutton-img" src="~/Content/img/yahoo.png" />
+                                        </label>
+                                        <label class="btn" onclick="setSearchProvider('bing')">
+                                            <input type="radio" name="providers" id="bing" /><img class="radbutton-img" src="~/Content/img/social-media.png" />
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col"></div>
+                            </div>
+                            @Html.HiddenFor(model => model.SearchModel.SearchEngineName)
+                            <div class="row">
+                                <div class="col"></div>
+                                <div class="col-lg-8 input-group">
+                                    @Html.EditorFor(model => model.SearchModel.SearchTerm, new { htmlAttributes = new { @class = "form-control form-control-lg search-start", @placeholder = "Type here to search..." } })
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary btn-lg search-end" type="submit">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </span>
+                                </div>
+
+                                <div class="col"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col"></div>
+                                <div class="col-lg-8">
+                                    <span class="row ml-4 pt-1">@Html.ValidationMessageFor(model => model.SearchModel.SearchEngineName, "", new { @class = "text-danger" })</span>
+                                    <span class="row ml-4 pt-1">@Html.ValidationMessageFor(model => model.SearchModel.SearchTerm, "", new { @class = "text-danger" })</span>
+                                </div>
+                                <div class="col"></div>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="topsites-container">
+            <div class="tiles">
+                @foreach (var quicklink in Model.QuickLinks)
+                {
+                    <div class="tile">
+                        <div class="circle">
+                            <a href="@Url.Action("QuickLink", "Home", new { siteUrl = quicklink.QuickLinkUrl })">
+                                <img class="favicon" src="@Url.Content(quicklink.Image)" />
+                            </a>
+                        </div>
+                        <div class="caption">@Html.Raw(quicklink.Name)</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+<script type="text/javascript">
+
+    function setSearchProvider(providerName) {
+        document.getElementById('SearchModel_SearchEngineName').value = providerName;
+        console.log(providerName);
+    }
+</script>
+}
